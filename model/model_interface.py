@@ -14,7 +14,7 @@ class MInterface(pl.LightningModule):
         loss: str or configure yourselves
         """
         super().__init__()
-        self.save_hyperparameters()
+        self.save_hyperparameters(ignore=["model"])
         self.model = self.load_model() if isinstance(model, str) else model
         self.configure_loss()
 
