@@ -84,30 +84,3 @@ class MInterface(pl.LightningModule):
         else:
             raise ValueError("Invalid Loss Type!")
 
-    def load_model(self):
-        name = self.hparams.model_name
-        # Change the `snake_case.py` file name to `CamelCase` class name.
-        # Please always name your model file name as `snake_case.py` and
-        # class name corresponding `CamelCase`.
-        camel_name = ''.join([i.capitalize() for i in name.split('_')])
-        try:
-            Model = getattr(importlib.import_module(
-                '.' + name, package=__package__), camel_name)
-        except:
-            raise ValueError(
-                f'Invalid Module File Name or Invalid Class Name {name}.{camel_name}!')
-        return Model
-
-    def instancialize(self, Model, **other_args):
-        """ Instancialize a model using the corresponding parameters
-            from self.hparams dictionary. You can also input any args
-            to overwrite the corresponding value in self.hparams.
-        """
-        class_args = inspect.getargspec(Model.__init__).args[1:]
-        inkeys = self.hparams.keys()
-        args1 = {}
-        for arg in class_args:
-            if arg in inkeys:
-                args1[arg] = getattr(self.hparams, arg)
-        args1.update(other_args)
-        return Model(**args1)
